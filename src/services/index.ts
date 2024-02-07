@@ -6,6 +6,16 @@ interface Post {
   author: string;
 }
 
+/*
+
+GET /posts?title=json-server&author=typicode
+GET /posts?id=1&id=2
+GET /comments?author.name=typicode
+
+posts?title=test&author=test
+
+*/
+
 export const dataApi = createApi({
   reducerPath: "dataApi",
   baseQuery: fetchBaseQuery({
@@ -25,6 +35,15 @@ export const dataApi = createApi({
       query: ({ id }: { id: string }) => ({
         method: "GET",
         url: `posts/${id}`,
+      }),
+    }),
+    searchTitle: builder.query({
+      query: ({ title }: { title: string }) => ({
+        method: "GET",
+        url: `posts?title=${title}`,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
       }),
     }),
     addNewPost: builder.mutation({
@@ -65,4 +84,6 @@ export const {
   useGetPostByIdQuery,
   useLazyGetPostByIdQuery,
   useUpdatePostMutation,
+  useSearchTitleQuery,
+  useLazySearchTitleQuery,
 } = dataApi;

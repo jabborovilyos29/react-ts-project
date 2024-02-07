@@ -28,7 +28,7 @@ export default function Login() {
 
     if (
       data.name === (evt.target as Record<string, any>)[0]?.value &&
-      data.password === (evt.target as Record<string, any>)[1]?.value.value
+      data.password === (evt.target as Record<string, any>)[1]?.value
     ) {
       dispatch(login(user));
       navigate("/", { replace: true });
