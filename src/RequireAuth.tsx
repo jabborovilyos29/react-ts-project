@@ -26,7 +26,7 @@ export function RequireAuth({ children }: any): ReactElement {
   console.log(user);
 
   if (user?.error) {
-    return <Navigate to={"/login"} replace />;
+    return <Navigate to={"/login"} />;
   }
 
   return children;

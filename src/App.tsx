@@ -13,7 +13,7 @@ export default function App() {
             <Posts />
           </RequireAuth>
         }
-      />
+      ></Route>
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<>Not found</>} />
     </Routes>

@@ -4,38 +4,44 @@ import { useDispatch } from "react-redux";
 import { login } from "./store/slices/user/userCheck";
 import { useNavigate } from "react-router-dom";
 
+interface User {
+  name: string;
+  password: string;
+}
+
+interface CustomElements extends HTMLFormControlsCollection {
+  name: HTMLInputElement;
+  password: HTMLInputElement;
+}
+
+interface CustomForm extends HTMLFormElement {
+  elements: CustomElements;
+}
+
 export default function Login() {
   const [errorHandling, setErrorHandling] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  interface User {
-    name: string;
-    password: string;
-  }
-
   const { data } = useGetUserQuery({
     refetchOnMountOrArgChange: true,
   });
 
-  function handleSubmit(evt: FormEvent<HTMLFormElement>) {
+  function handleSubmit(evt: FormEvent<CustomForm>) {
     evt.preventDefault();
+    const target = evt.currentTarget.elements;
 
     const user: User = {
-      name: (evt.target as Record<string, any>)[0]?.value,
-      password: (evt.target as Record<string, any>)[1]?.value,
+      name: target.name.value,
+      password: target.password.value,
     };
 
-    if (
-      data.name === (evt.target as Record<string, any>)[0]?.value &&
-      data.password === (evt.target as Record<string, any>)[1]?.value.value
-    ) {
+    if (data.name === user.name && data.password === user.password) {
       dispatch(login(user));
-      navigate("/", { replace: true });
+      navigate("/");
     } else {
       setErrorHandling(true);
     }
-    console.log(user);
   }
 
   return (
@@ -50,7 +56,7 @@ export default function Login() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
             className="space-y-6"
-            onSubmit={(evt: FormEvent<HTMLFormElement>) => handleSubmit(evt)}
+            onSubmit={(evt: FormEvent<CustomForm>) => handleSubmit(evt)}
           >
             <div>
               <label
