@@ -14,7 +14,7 @@ interface Values {
 }
 
 interface Items {
-  id: any;
+  id: string | number;
   title: string;
   author: string;
 }
@@ -25,7 +25,7 @@ const values: Values = {
 };
 
 export default function Posts() {
-  const [editPost, setEditedPost] = useState(null);
+  const [editPost, setEditedPost] = useState<Values | Items | null>(null);
   const [value, setValue] = useState<Values>(values);
   const { data, isLoading, error } = useGetPostsQuery({
     refetchOnMountOrArgChange: true,
@@ -39,7 +39,7 @@ export default function Posts() {
 
   const [deletePost] = useDeletePostMutation();
 
-  const handleEdit = async (item: any) => {
+  const handleEdit = async (item: Items) => {
     try {
       const response = await triggerPostById({ id: item.id }).unwrap();
       setEditedPost(response);
@@ -68,7 +68,11 @@ export default function Posts() {
           <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {(searchResult !== null &&
               searchResult?.map(
-                (item: { id: number; title: string; author: string }) => {
+                (item: {
+                  id: string | number;
+                  title: string;
+                  author: string;
+                }) => {
                   return (
                     <article
                       key={item.id}

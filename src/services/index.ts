@@ -32,14 +32,12 @@ export const dataApi = createApi({
       providesTags: ["Post"],
     }),
     getPostById: builder.query({
-      query: ({ id }: { id: string }) => ({
-        method: "GET",
+      query: ({ id }: { id: string | number }) => ({
         url: `posts/${id}`,
       }),
     }),
     searchTitle: builder.query({
       query: ({ title }: { title: string }) => ({
-        method: "GET",
         url: `posts?title=${title}`,
         headers: {
           "Content-type": "application/json; charset=UTF-8",
@@ -58,7 +56,7 @@ export const dataApi = createApi({
       invalidatesTags: ["Post"],
     }),
     updatePost: builder.mutation({
-      query(payload: { id: string | number; data: Post }) {
+      query: (payload: { id: string | number; data: Post }): { url: string; method: string; body: Post; } => {
         return {
           url: `posts/${payload.id}`,
           method: "PUT",

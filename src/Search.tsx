@@ -16,7 +16,7 @@ export default function Search({ setSearchResult }: any) {
       } catch (error) {
         console.log(error);
       }
-    }, 2000);
+    }, 750);
     return () => clearTimeout(getdata);
   }, [search]);
 

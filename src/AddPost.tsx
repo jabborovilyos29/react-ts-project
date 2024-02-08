@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent } from "react";
+import { ChangeEvent, FormEvent, ReactNode } from "react";
 import { useAddNewPostMutation } from "./services";
 
 interface Post {
@@ -7,12 +7,7 @@ interface Post {
   author: string;
 }
 
-interface Values {
-  title: string;
-  author: string;
-}
-
-const values: Values = {
+const values: Omit<Post, "id"> = {
   title: "",
   author: "",
 };
@@ -22,11 +17,11 @@ export default function AddPost({
   setValue,
   editPost,
   updatePost,
-}: any) {
+}: any): ReactNode {
   const [addPost] = useAddNewPostMutation();
 
   const handleChage = (evt: ChangeEvent<HTMLInputElement>) => {
-    setValue((prev: Values) => {
+    setValue((prev: Post): Post => {
       return { ...prev, [evt.target.name]: evt.target.value };
     });
   };
