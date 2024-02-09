@@ -4,19 +4,20 @@ import { Navigate } from "react-router-dom";
 interface User {
   name: string;
   password: string;
+  error?: string;
 }
 
 interface Props {
   children: ReactElement;
 }
 
-export function RequireAuth({ children }: Props): ReactElement {
+export function GuestRoutes({ children }: Props): ReactElement {
   //   try {
   //     const user: User = JSON.parse(localStorage.getItem("user") ?? "");
   //     console.log(user);
   //     return children;
   //   } catch (error) {
-  //     return <Navigate to={"/login"} />;
+  //     return <Navigate to={"/login"} replace />;
   //   }
 
   const user: User | any = JSON.parse(
@@ -25,8 +26,8 @@ export function RequireAuth({ children }: Props): ReactElement {
 
   console.log(user);
 
-  if (user?.error) {
-    return <Navigate to={"/login"} />;
+  if (user?.name) {
+    return <Navigate to={"/"} />;
   }
 
   return children;

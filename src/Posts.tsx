@@ -1,41 +1,57 @@
 import { useState } from "react";
 import AddPost from "./AddPost";
 import {
-  useGetPostsQuery,
   useDeletePostMutation,
   useLazyGetPostByIdQuery,
   useUpdatePostMutation,
+  useGetPostsQuery,
+  useLazyGetPostsQuery,
 } from "./services";
 import Search from "./Search";
-
-interface Values {
-  title: string;
-  author: string;
-}
-
-interface Items {
-  id: string | number;
-  title: string;
-  author: string;
-}
+import { Values } from "./Types";
+import { Items } from "./Types";
+import { DefaultButton } from "@fluentui/react";
+import { makeStyles, shorthands, slot } from "@fluentui/react-components";
 
 const values: Values = {
   title: "",
   author: "",
 };
 
+const useStyles = makeStyles({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginLeft: "0 auto",
+    width: "100%",
+    maxWidth: "1220px",
+    height: "100vh",
+  },
+  article: {
+    width: "300px",
+    height: "100px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  buttonGroup: {
+    display: "flex",
+    width: "200px",
+    justifyContent: "space-between",
+  },
+});
+
 export default function Posts() {
-  const [editPost, setEditedPost] = useState<Values | Items | null>(null);
+  const classes = useStyles();
   const [value, setValue] = useState<Values>(values);
-  const { data, isLoading, error } = useGetPostsQuery({
-    refetchOnMountOrArgChange: true,
-  });
-
-  const [searchResult, setSearchResult] = useState<[Items] | null>(null);
-
+  const { data, error } = useGetPostsQuery("/posts");
+  const [triggerSearchTitle, { data: resultSearch, isLoading }] =
+    useLazyGetPostsQuery();
   const [triggerPostById, {}] = useLazyGetPostByIdQuery();
-
   const [updatePost, {}] = useUpdatePostMutation();
+  const [editPost, setEditedPost] = useState<Values | Items | null>(null);
 
   const [deletePost] = useDeletePostMutation();
 
@@ -55,104 +71,52 @@ export default function Posts() {
       {error ? (
         <>Oh no, there was an error</>
       ) : isLoading ? (
-        <>Loading...</>
+        <h1 style={{ position: "absolute", zIndex: 999 }}>Loading...</h1>
       ) : data ? (
         <>
-          <Search setSearchResult={setSearchResult} />
+          <Search triggerSearchTitle={triggerSearchTitle} />
           <AddPost
             value={value}
             setValue={setValue}
             editPost={editPost}
+            setEditedPost={setEditedPost}
             updatePost={updatePost}
           />
-          <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-            {(searchResult !== null &&
-              searchResult?.map(
-                (item: {
-                  id: string | number;
-                  title: string;
-                  author: string;
-                }) => {
-                  return (
-                    <article
-                      key={item.id}
-                      className="flex max-w-xl flex-col items-start justify-between ml-10"
-                    >
-                      <div className="flex items-center gap-x-4 text-xs"></div>
-                      <div className="group relative">
-                        <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                          <a href={item.title}>
-                            <span className="absolute inset-0" />
-                            {item.title}
-                          </a>
-                        </h3>
-                        <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-                          {item.author}
-                        </p>
-                      </div>
-                      <div className="flex m-1 justify-between w-1/2">
-                        <button
-                          onClick={() => {
-                            handleEdit(item);
-                          }}
-                          className="flex ml justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => {
-                            deletePost(item.id);
-                          }}
-                          className="flex  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                          delete
-                        </button>
-                      </div>
-                    </article>
-                  );
-                },
-              )) ||
-              data?.map(
-                (item: { id: number; title: string; author: string }) => {
-                  return (
-                    <article
-                      key={item.id}
-                      className="flex max-w-xl flex-col items-start justify-between ml-10"
-                    >
-                      <div className="flex items-center gap-x-4 text-xs"></div>
-                      <div className="group relative">
-                        <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                          <a href={item.title}>
-                            <span className="absolute inset-0" />
-                            {item.title}
-                          </a>
-                        </h3>
-                        <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-                          {item.author}
-                        </p>
-                      </div>
-                      <div className="flex m-1 justify-between w-1/2">
-                        <button
-                          onClick={() => {
-                            handleEdit(item);
-                          }}
-                          className="flex ml justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => {
-                            deletePost(item.id);
-                          }}
-                          className="flex  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                          delete
-                        </button>
-                      </div>
-                    </article>
-                  );
-                },
-              )}
+          <div className={classes.root}>
+            {resultSearch?.map(
+              (item: {
+                id: number | string;
+                title: string;
+                author: string;
+              }) => {
+                return (
+                  <article key={item.id} className={classes.article}>
+                    <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900">
+                      {item.title}
+                    </h3>
+                    <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
+                      {item.author}
+                    </p>
+                    <div className={classes.buttonGroup}>
+                      <DefaultButton
+                        onClick={() => {
+                          handleEdit(item);
+                        }}
+                      >
+                        Edit
+                      </DefaultButton>
+                      <DefaultButton
+                        onClick={() => {
+                          deletePost(item.id);
+                        }}
+                      >
+                        delete
+                      </DefaultButton>
+                    </div>
+                  </article>
+                );
+              },
+            )}
           </div>
         </>
       ) : null}

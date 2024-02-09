@@ -28,21 +28,16 @@ export const dataApi = createApi({
       providesTags: ["Post"],
     }),
     getPosts: builder.query({
-      query: () => "/posts",
+      query: (title: string) =>
+        (title !== "" && `/posts?title=${title}`) || "/posts",
+
       providesTags: ["Post"],
     }),
     getPostById: builder.query({
       query: ({ id }: { id: string | number }) => ({
         url: `posts/${id}`,
       }),
-    }),
-    searchTitle: builder.query({
-      query: ({ title }: { title: string }) => ({
-        url: `posts?title=${title}`,
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      }),
+      providesTags: ["Post"],
     }),
     addNewPost: builder.mutation({
       query: (payload: Post) => ({
@@ -56,7 +51,10 @@ export const dataApi = createApi({
       invalidatesTags: ["Post"],
     }),
     updatePost: builder.mutation({
-      query: (payload: { id: string | number; data: Post }): { url: string; method: string; body: Post; } => {
+      query: (payload: {
+        id: string | number;
+        data: Post;
+      }): { url: string; method: string; body: Post } => {
         return {
           url: `posts/${payload.id}`,
           method: "PUT",
@@ -76,12 +74,11 @@ export const dataApi = createApi({
 });
 export const {
   useGetPostsQuery,
+  useLazyGetPostsQuery,
   useAddNewPostMutation,
   useDeletePostMutation,
   useGetUserQuery,
   useGetPostByIdQuery,
   useLazyGetPostByIdQuery,
   useUpdatePostMutation,
-  useSearchTitleQuery,
-  useLazySearchTitleQuery,
 } = dataApi;

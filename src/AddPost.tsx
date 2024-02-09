@@ -1,5 +1,8 @@
 import { ChangeEvent, FormEvent, ReactNode } from "react";
 import { useAddNewPostMutation } from "./services";
+import { Values } from "./Types";
+import { makeStyles, shorthands } from "@fluentui/react-components";
+import { DefaultButton } from "@fluentui/react";
 
 interface Post {
   id: string;
@@ -12,16 +15,57 @@ const values: Omit<Post, "id"> = {
   author: "",
 };
 
+const useStyles = makeStyles({
+  root: {
+    display: "flex",
+    height: "100vh",
+    width: "100%",
+    maxWidth: "1220px",
+    ...shorthands.flex("1 1 0%"),
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: "24px",
+    paddingRight: "24px",
+    paddingTop: "48px",
+    paddingBottom: "48px",
+  },
+  title: {
+    marginTop: "40px",
+    textAlign: "center",
+    fontSize: "24px",
+    lineHeight: "36px",
+    fontWeight: "bold",
+    letterSpacing: "-0.025em",
+    color: "gray",
+  },
+
+  label: {
+    display: "block",
+    fontSize: " 14px",
+    lineHeight: " 20px",
+    fontWeight: "500",
+    color: "gray",
+  },
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
+
 export default function AddPost({
   value,
   setValue,
   editPost,
+  setEditedPost,
   updatePost,
 }: any): ReactNode {
   const [addPost] = useAddNewPostMutation();
+  const classes = useStyles();
 
   const handleChage = (evt: ChangeEvent<HTMLInputElement>) => {
-    setValue((prev: Post): Post => {
+    setValue((prev: Post | Values): Post | Values => {
       return { ...prev, [evt.target.name]: evt.target.value };
     });
   };
@@ -43,32 +87,31 @@ export default function AddPost({
       addPost(newData);
     }
     setValue(values);
+    setEditedPost(null);
   };
 
   return (
     <>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+      <div className={classes.root}>
+        <div>
+          <h2 className={classes.title}>
             {(editPost && "Edit post") || "Add post"}
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div style={{ marginTop: 10 }}>
           <form
-            className="space-y-6"
             onSubmit={(evt: FormEvent<HTMLFormElement>) => {
               handleSubmit(evt);
             }}
           >
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Title
-              </label>
-              <div className="mt-2">
+              <div className={classes.container}>
+                <label htmlFor="title" className={classes.label}>
+                  Title
+                </label>
+              </div>
+              <div style={{ marginTop: 2 }}>
                 <input
                   id="title"
                   name="title"
@@ -77,17 +120,14 @@ export default function AddPost({
                     handleChage(evt);
                   }}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="inputAddPost"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+              <div className={classes.container}>
+                <label htmlFor="password" className={classes.label}>
                   Author
                 </label>
                 <div className="text-sm"></div>
@@ -101,15 +141,15 @@ export default function AddPost({
                     handleChage(evt);
                   }}
                   required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="inputAddPost"
                 />
               </div>
             </div>
             <div className="mt-2"></div>
             <div>
-              <button className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              <DefaultButton type="submit" style={{marginTop: 20}}>
                 {(editPost && "Edit post") || "Add post"}
-              </button>
+              </DefaultButton>
             </div>
           </form>
         </div>

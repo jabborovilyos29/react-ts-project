@@ -1,17 +1,42 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useLazySearchTitleQuery } from "./services";
+import { useDispatch } from "react-redux";
+import { logout } from "./store/slices/user/userCheck";
+import { useNavigate } from "react-router-dom";
+import { Input, makeStyles, shorthands } from "@fluentui/react-components";
+import { DefaultButton } from "@fluentui/react";
 
-export default function Search({ setSearchResult }: any) {
+const useStyles = makeStyles({
+  root: {
+    display: "flex",
+    width: "100%",
+    height: "80px",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    ...shorthands.borderBottom("1px", "solid", "black"),
+  },
+  label: {
+    ...shorthands.margin("20px", "20px"),
+  },
+});
+
+export default function Search({ triggerSearchTitle }: any) {
+  const classes = useStyles();
   const [search, setSearch] = useState<string>("");
-  const [triggerSearchTitle, {}] = useLazySearchTitleQuery();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const Logout = (): void => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
   useEffect(() => {
     const getdata = setTimeout(async () => {
       try {
-        const response = await triggerSearchTitle({
-          title: search,
-        }).unwrap();
-        setSearchResult(response);
+        const response = await triggerSearchTitle(search).unwrap();
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -25,19 +50,16 @@ export default function Search({ setSearchResult }: any) {
   };
 
   return (
-    <div className="flex w-full h-20 justify-center items-center">
-      <label
-        htmlFor="search"
-        className="block text-sm font-medium leading-6 text-gray-900 mr-4"
-      >
+    <div className={classes.root}>
+      <DefaultButton onClick={Logout}>Logout</DefaultButton>
+      <label htmlFor="search" className={classes.label}>
         Search
       </label>
-      <input
+      <Input
         type="search"
         name="search"
         id="search"
-        className="block w-1/2 max-w-screen-sm rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        placeholder="search"
+        className={classes.input}
         value={search}
         onChange={(evt: ChangeEvent<HTMLInputElement>) => {
           handleSearch(evt);
