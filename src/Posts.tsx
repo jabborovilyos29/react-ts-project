@@ -11,7 +11,7 @@ import Search from "./Search";
 import { Values } from "./Types";
 import { Items } from "./Types";
 import { DefaultButton } from "@fluentui/react";
-import { makeStyles, shorthands, slot } from "@fluentui/react-components";
+import { makeStyles } from "@fluentui/react-components";
 
 const values: Values = {
   title: "",
