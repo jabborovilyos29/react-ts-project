@@ -1,14 +1,7 @@
 import { ChangeEvent, FormEvent, ReactNode } from "react";
 import { useAddNewPostMutation } from "./services";
-import { Values } from "./Types";
-import { makeStyles, shorthands } from "@fluentui/react-components";
-import { DefaultButton } from "@fluentui/react";
-
-interface Post {
-  id: string;
-  title: string;
-  author: string;
-}
+import { Post, Values } from "./types/Types";
+import { Button, makeStyles, shorthands } from "@fluentui/react-components";
 
 const values: Omit<Post, "id"> = {
   title: "",
@@ -147,9 +140,9 @@ export default function AddPost({
             </div>
             <div className="mt-2"></div>
             <div>
-              <DefaultButton type="submit" style={{marginTop: 20}}>
+              <Button type="submit" style={{ marginTop: 20 }}>
                 {(editPost && "Edit post") || "Add post"}
-              </DefaultButton>
+              </Button>
             </div>
           </form>
         </div>

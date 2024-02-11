@@ -2,8 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "./store/slices/user/userCheck";
 import { useNavigate } from "react-router-dom";
-import { Input, makeStyles, shorthands } from "@fluentui/react-components";
-import { DefaultButton } from "@fluentui/react";
+import { Button, Input, makeStyles, shorthands } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
   root: {
@@ -51,7 +50,7 @@ export default function Search({ triggerSearchTitle }: any) {
 
   return (
     <div className={classes.root}>
-      <DefaultButton onClick={Logout}>Logout</DefaultButton>
+      <Button onClick={Logout}>Logout</Button>
       <label htmlFor="search" className={classes.label}>
         Search
       </label>

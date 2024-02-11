@@ -8,10 +8,9 @@ import {
   useLazyGetPostsQuery,
 } from "./services";
 import Search from "./Search";
-import { Values } from "./Types";
-import { Items } from "./Types";
-import { DefaultButton } from "@fluentui/react";
-import { makeStyles } from "@fluentui/react-components";
+import { Values } from "./types/Types";
+import { Items } from "./types/Types";
+import { Button, makeStyles } from "@fluentui/react-components";
 
 const values: Values = {
   title: "",
@@ -46,9 +45,8 @@ const useStyles = makeStyles({
 export default function Posts() {
   const classes = useStyles();
   const [value, setValue] = useState<Values>(values);
-  const { data, error } = useGetPostsQuery("/posts");
-  const [triggerSearchTitle, { data: resultSearch, isLoading }] =
-    useLazyGetPostsQuery();
+  const { data, error, isLoading } = useGetPostsQuery("/posts");
+  const [triggerSearchTitle, { data: resultSearch }] = useLazyGetPostsQuery();
   const [triggerPostById, {}] = useLazyGetPostByIdQuery();
   const [updatePost, {}] = useUpdatePostMutation();
   const [editPost, setEditedPost] = useState<Values | Items | null>(null);
@@ -98,20 +96,20 @@ export default function Posts() {
                       {item.author}
                     </p>
                     <div className={classes.buttonGroup}>
-                      <DefaultButton
+                      <Button
                         onClick={() => {
                           handleEdit(item);
                         }}
                       >
                         Edit
-                      </DefaultButton>
-                      <DefaultButton
+                      </Button>
+                      <Button
                         onClick={() => {
                           deletePost(item.id);
                         }}
                       >
                         delete
-                      </DefaultButton>
+                      </Button>
                     </div>
                   </article>
                 );

@@ -1,68 +1,37 @@
-import { FormEvent, useState } from "react";
 import { useGetUserQuery } from "./services";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./store/slices/user/userCheck";
 import { useNavigate } from "react-router-dom";
-import { DefaultButton } from "@fluentui/react";
 import {
+  Button,
   Card,
   Input,
   InputProps,
   Label,
   Text,
-  makeStyles,
-  shorthands,
 } from "@fluentui/react-components";
-
-interface User {
-  name: string;
-  password: string;
-}
-
-interface CustomElements extends HTMLFormControlsCollection {
-  name: HTMLInputElement;
-  password: HTMLInputElement;
-}
-
-interface CustomForm extends HTMLFormElement {
-  elements: CustomElements;
-}
-
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    ...shorthands.gap("2px"),
-    maxWidth: "400px",
-  },
-
-  input: {
-    ...shorthands.borderBottom("1px", "solid", "black"),
-  },
-  card: {
-    width: "400px",
-    maxWidth: "100%",
-    height: "fit-content",
-  },
-  container: {
-    width: "100%",
-    maxWidth: "1320px",
-    height: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textDiv: {
-    ...shorthands.margin("20px"),
-  },
-});
+import { useLoginStyles } from "./hooks/styledHooks/useStyles";
+import { CustomForm, UseInput, User } from "./types/Types";
+import { useInput } from "./hooks/validation/useInput";
+import ErrorMessage from "./ErrorMessage";
 
 export default function Login(props: InputProps) {
   const [errorHandling, setErrorHandling] = useState<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const styles = useStyles();
+  const styles = useLoginStyles();
+
+  const name: UseInput = useInput("", {
+    isEmpty: true,
+    minLength: 3,
+    maxLength: 9,
+  });
+  const password: UseInput = useInput("", {
+    isEmpty: true,
+    minLength: 4,
+    maxLength: 16,
+  });
 
   const { data } = useGetUserQuery({
     refetchOnMountOrArgChange: true,
@@ -89,7 +58,9 @@ export default function Login(props: InputProps) {
     <>
       <div className={styles.container}>
         <div className={styles.textDiv}>
-          <Text font="numeric">Sign in to your account</Text>
+          <Text size={500} font="numeric">
+            Sign in to your account
+          </Text>
         </div>
 
         <Card className={styles.card}>
@@ -99,18 +70,22 @@ export default function Login(props: InputProps) {
                 htmlFor={"name"}
                 size={props.size}
                 disabled={props.disabled}
+                className={styles.label}
               >
                 Name
               </Label>
+              <ErrorMessage props={name} />
               <Input
-                className={styles.input}
-                maxLength={20}
-                minLength={2}
-                required={true}
+                value={name.value}
+                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                  name.onChange(evt)
+                }
+                onBlur={() => name.onBlur()}
                 id={"name"}
                 {...props}
                 name={"name"}
                 type={"text"}
+                placeholder="your name"
               />
             </div>
             <div className={styles.root}>
@@ -118,18 +93,22 @@ export default function Login(props: InputProps) {
                 htmlFor={"password"}
                 size={props.size}
                 disabled={props.disabled}
+                className={styles.label}
               >
                 Password
               </Label>
+              <ErrorMessage props={password} />
               <Input
-                className={styles.input}
-                maxLength={20}
-                minLength={4}
-                required={true}
                 id={"password"}
                 {...props}
                 name={"password"}
                 type={"password"}
+                placeholder="your password"
+                value={password.value}
+                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                  password.onChange(evt)
+                }
+                onBlur={() => password.onBlur()}
               />
             </div>
             <div style={{ margin: "20px" }}>
@@ -138,7 +117,12 @@ export default function Login(props: InputProps) {
               </h4>
             </div>
             <div>
-              <DefaultButton type="submit">Log in</DefaultButton>
+              <Button
+                disabled={!name.inputValid || !password.inputValid}
+                type="submit"
+              >
+                Log in
+              </Button>
             </div>
           </form>
         </Card>

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { InitialState, User } from "../../../types/Types";
 
-const initialState = {
+const initialState: InitialState = {
   user: null,
 };
 
@@ -8,13 +9,13 @@ export const userCheckSlice = createSlice({
   name: "userCheck",
   initialState,
   reducers: {
-    login: (state, { payload }) => {
+    login: (state: InitialState, { payload }: { payload: User }) => {
       state.user = payload;
       localStorage.clear();
-      const dataToJson = JSON.stringify(state.user);
+      const dataToJson: string = JSON.stringify(state.user);
       localStorage.setItem("user", dataToJson);
     },
-    logout: (state) => {
+    logout: (state: InitialState) => {
       state.user = null;
       localStorage.clear();
     },

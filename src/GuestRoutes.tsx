@@ -2,8 +2,8 @@ import { ReactElement } from "react";
 import { Navigate } from "react-router-dom";
 
 interface User {
-  name: string;
-  password: string;
+  name?: string;
+  password?: string;
   error?: string;
 }
 
@@ -20,7 +20,7 @@ export function GuestRoutes({ children }: Props): ReactElement {
   //     return <Navigate to={"/login"} replace />;
   //   }
 
-  const user: User | any = JSON.parse(
+  const user: User = JSON.parse(
     localStorage.getItem("user") ?? `{"error": "error"}`,
   );
 
