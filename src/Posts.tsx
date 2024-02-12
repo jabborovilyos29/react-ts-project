@@ -10,40 +10,23 @@ import {
 import Search from "./Search";
 import { Values } from "./types/Types";
 import { Items } from "./types/Types";
-import { Button, makeStyles } from "@fluentui/react-components";
+import {
+  Body1,
+  Button,
+  Caption1,
+  Card,
+  CardFooter,
+  CardHeader,
+} from "@fluentui/react-components";
+import { useCardStyles } from "./hooks/styledHooks/useStyles";
 
 const values: Values = {
   title: "",
   author: "",
 };
 
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginLeft: "0 auto",
-    width: "100%",
-    maxWidth: "1220px",
-    height: "100vh",
-  },
-  article: {
-    width: "300px",
-    height: "100px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  buttonGroup: {
-    display: "flex",
-    width: "200px",
-    justifyContent: "space-between",
-  },
-});
-
 export default function Posts() {
-  const classes = useStyles();
+  const styles = useCardStyles();
   const [value, setValue] = useState<Values>(values);
   const { data, error, isLoading } = useGetPostsQuery("/posts");
   const [triggerSearchTitle, { data: resultSearch }] = useLazyGetPostsQuery();
@@ -80,7 +63,7 @@ export default function Posts() {
             setEditedPost={setEditedPost}
             updatePost={updatePost}
           />
-          <div className={classes.root}>
+          <div className={styles.root}>
             {resultSearch?.map(
               (item: {
                 id: number | string;
@@ -88,14 +71,12 @@ export default function Posts() {
                 author: string;
               }) => {
                 return (
-                  <article key={item.id} className={classes.article}>
-                    <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900">
-                      {item.title}
-                    </h3>
-                    <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">
-                      {item.author}
-                    </p>
-                    <div className={classes.buttonGroup}>
+                  <Card key={item.id} className={styles.card}>
+                    <CardHeader
+                      header={<Body1>{item.title}</Body1>}
+                      description={<Caption1>{item.author}</Caption1>}
+                    />
+                    <CardFooter>
                       <Button
                         onClick={() => {
                           handleEdit(item);
@@ -108,10 +89,10 @@ export default function Posts() {
                           deletePost(item.id);
                         }}
                       >
-                        delete
+                        Delete
                       </Button>
-                    </div>
-                  </article>
+                    </CardFooter>
+                  </Card>
                 );
               },
             )}

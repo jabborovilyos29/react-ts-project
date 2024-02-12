@@ -1,10 +1,6 @@
 import { UseInput } from "./types/Types";
 
 export default function ErrorMessage({ props }: { props: UseInput }) {
-  console.log(props.maxLengthErr.message);
-  console.log(props.minLengthErr.message);
-
-
   return (
     (props.isDirty && props.isEmpty.value && (
       <p style={{ color: "red", marginBottom: "1px" }}>

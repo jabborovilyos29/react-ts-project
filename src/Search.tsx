@@ -2,26 +2,11 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { logout } from "./store/slices/user/userCheck";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, makeStyles, shorthands } from "@fluentui/react-components";
-
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    width: "100%",
-    height: "80px",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    ...shorthands.borderBottom("1px", "solid", "black"),
-  },
-  label: {
-    ...shorthands.margin("20px", "20px"),
-  },
-});
+import { Button, Input } from "@fluentui/react-components";
+import { useSearchStyles } from "./hooks/styledHooks/useStyles";
 
 export default function Search({ triggerSearchTitle }: any) {
-  const classes = useStyles();
+  const classes = useSearchStyles();
   const [search, setSearch] = useState<string>("");
 
   const dispatch = useDispatch();
@@ -49,21 +34,22 @@ export default function Search({ triggerSearchTitle }: any) {
   };
 
   return (
-    <div className={classes.root}>
-      <Button onClick={Logout}>Logout</Button>
-      <label htmlFor="search" className={classes.label}>
-        Search
-      </label>
-      <Input
-        type="search"
-        name="search"
-        id="search"
-        className={classes.input}
-        value={search}
-        onChange={(evt: ChangeEvent<HTMLInputElement>) => {
-          handleSearch(evt);
-        }}
-      />
-    </div>
+    <>
+      <div className={classes.root}>
+        <Button className={classes.logoutButton} onClick={Logout}>Logout</Button>
+        <div className={classes.searchBox}>
+          <Input
+            id="search"
+            name="search"
+            type="search"
+            placeholder="Search..."
+            value={search}
+            onChange={(evt: ChangeEvent<HTMLInputElement>) => {
+              handleSearch(evt);
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 }
