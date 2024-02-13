@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
+  Field,
   Input,
   InputProps,
   Label,
@@ -14,13 +15,21 @@ import {
 import { useLoginStyles } from "./hooks/styledHooks/useStyles";
 import { CustomForm, UseInput, User } from "./types/Types";
 import { useInput } from "./hooks/validation/useInput";
-import ErrorMessage from "./ErrorMessage";
+import { ChangeThemeComponent } from "./ChangeThemeComponent";
+import { tokens } from "@fluentui/react-components";
+import { Eye24Regular, EyeOff24Regular } from "@fluentui/react-icons";
 
 export default function Login(props: InputProps) {
   const [errorHandling, setErrorHandling] = useState<boolean>(false);
+  const [seePassword, setSeePassword] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const styles = useLoginStyles();
+
+  const handleClick = () => {
+    setSeePassword((prev) => !prev);
+  };
 
   const name: UseInput = useInput("", {
     isEmpty: true,
@@ -56,60 +65,104 @@ export default function Login(props: InputProps) {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.textDiv}>
-          <Text size={500} font="numeric">
-            Sign in to your account
-          </Text>
+      <div
+        className={styles.container}
+        style={{ backgroundColor: tokens.colorBrandStroke2Contrast }}
+      >
+        <div style={{ position: "absolute", top: "15px", right: "15px" }}>
+          <ChangeThemeComponent />
         </div>
-
         <Card className={styles.card}>
+          <div className={styles.textDiv}>
+            <Text size={500} font="numeric">
+              Sign in to your account
+            </Text>
+          </div>
           <form onSubmit={(evt: FormEvent<CustomForm>) => handleSubmit(evt)}>
             <div className={styles.root}>
-              <Label
-                htmlFor={"name"}
-                size={props.size}
-                disabled={props.disabled}
-                className={styles.label}
-              >
-                Name
-              </Label>
-              <ErrorMessage props={name} />
-              <Input
-                value={name.value}
-                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                  name.onChange(evt)
+              <Field
+                label={
+                  <Label size={"medium"} className={styles.label}>
+                    Name
+                  </Label>
                 }
-                onBlur={() => name.onBlur()}
-                id={"name"}
-                {...props}
-                name={"name"}
-                type={"text"}
-                placeholder="your name"
-              />
+                validationMessage={
+                  (name.isDirty &&
+                    name.isEmpty.value &&
+                    `${name.isEmpty.message}`) ||
+                  (name.isDirty &&
+                    name.maxLengthErr.value &&
+                    `${name.maxLengthErr.message}`) ||
+                  (name.isDirty &&
+                    name.minLengthErr.value &&
+                    `${name.minLengthErr.message}`) ||
+                  ""
+                }
+              >
+                <Input
+                  value={name.value}
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    name.onChange(evt)
+                  }
+                  onBlur={() => name.onBlur()}
+                  id={"name"}
+                  {...props}
+                  name={"name"}
+                  type={"text"}
+                  placeholder="your name"
+                />
+              </Field>
             </div>
             <div className={styles.root}>
-              <Label
-                htmlFor={"password"}
-                size={props.size}
-                disabled={props.disabled}
-                className={styles.label}
-              >
-                Password
-              </Label>
-              <ErrorMessage props={password} />
-              <Input
-                id={"password"}
-                {...props}
-                name={"password"}
-                type={"password"}
-                placeholder="your password"
-                value={password.value}
-                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                  password.onChange(evt)
+              <Field
+                label={
+                  <Label size={"medium"} className={styles.label}>
+                    Password
+                  </Label>
                 }
-                onBlur={() => password.onBlur()}
-              />
+                validationMessage={
+                  (password.isDirty &&
+                    password.isEmpty.value &&
+                    `${password.isEmpty.message}`) ||
+                  (password.isDirty &&
+                    password.maxLengthErr.value &&
+                    `${password.maxLengthErr.message}`) ||
+                  (password.isDirty &&
+                    password.minLengthErr.value &&
+                    `${password.minLengthErr.message}`) ||
+                  ""
+                }
+              >
+                <Input
+                  id={"password"}
+                  {...props}
+                  name={"password"}
+                  type={(seePassword && "text") || "password"}
+                  placeholder="your password"
+                  value={password.value}
+                  contentAfter={
+                    seePassword ? (
+                      <EyeOff24Regular
+                        onClick={() => {
+                          handleClick();
+                        }}
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <Eye24Regular
+                        onClick={() => {
+                          handleClick();
+                        }}
+                        style={{ cursor: "pointer" }}
+                      />
+                    )
+                  }
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    password.onChange(evt)
+                  }
+                  onBlur={() => password.onBlur()}
+                />
+              </Field>
             </div>
             <div style={{ margin: "20px" }}>
               <h4 style={{ color: "red" }}>

@@ -17,19 +17,25 @@ import {
   Card,
   CardFooter,
   CardHeader,
+  Spinner,
 } from "@fluentui/react-components";
 import { useCardStyles } from "./hooks/styledHooks/useStyles";
-
 const values: Values = {
   title: "",
   author: "",
 };
+import { tokens } from "@fluentui/react-components";
+import { useDispatch } from "react-redux";
+import { modalOpenClose } from "./store/slices/user/userCheck";
 
 export default function Posts() {
   const styles = useCardStyles();
+  const dispatch = useDispatch();
+  const [triggerLoader, setTriggerLoader] = useState(false);
   const [value, setValue] = useState<Values>(values);
-  const { data, error, isLoading } = useGetPostsQuery("/posts");
-  const [triggerSearchTitle, { data: resultSearch }] = useLazyGetPostsQuery();
+  const { data, error, isLoading } = useGetPostsQuery("");
+  const [triggerSearchTitle, { data: resultSearch, isLoading: searchLoading }] =
+    useLazyGetPostsQuery();
   const [triggerPostById, {}] = useLazyGetPostByIdQuery();
   const [updatePost, {}] = useUpdatePostMutation();
   const [editPost, setEditedPost] = useState<Values | Items | null>(null);
@@ -37,32 +43,46 @@ export default function Posts() {
   const [deletePost] = useDeletePostMutation();
 
   const handleEdit = async (item: Items) => {
+    dispatch(modalOpenClose());
     try {
+      setTriggerLoader(true);
       const response = await triggerPostById({ id: item.id }).unwrap();
       setEditedPost(response);
       setValue(response);
       console.log(response);
     } catch (err) {
       console.error(err);
+    } finally {
+      setTriggerLoader(false);
     }
   };
 
   return (
-    <div>
+    <div style={{ minHeight: "86.6vh" }}>
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          height: "100px",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <Search triggerSearchTitle={triggerSearchTitle} />
+        <AddPost
+          value={value}
+          setValue={setValue}
+          editPost={editPost}
+          setEditedPost={setEditedPost}
+          updatePost={updatePost}
+        />
+      </div>
       {error ? (
         <>Oh no, there was an error</>
-      ) : isLoading ? (
-        <h1 style={{ position: "absolute", zIndex: 999 }}>Loading...</h1>
+      ) : isLoading || searchLoading || triggerLoader ? (
+        <Spinner size="huge" color={tokens.colorNeutralBackgroundInverted} />
       ) : data ? (
         <>
-          <Search triggerSearchTitle={triggerSearchTitle} />
-          <AddPost
-            value={value}
-            setValue={setValue}
-            editPost={editPost}
-            setEditedPost={setEditedPost}
-            updatePost={updatePost}
-          />
           <div className={styles.root}>
             {resultSearch?.map(
               (item: {

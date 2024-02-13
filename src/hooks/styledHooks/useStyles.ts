@@ -8,13 +8,14 @@ export const useLoginStyles = makeStyles({
     maxWidth: "400px",
   },
   card: {
-    width: "400px",
-    maxWidth: "100%",
+    width: "100%",
+    maxWidth: "400px",
+    ...shorthands.margin("0", "auto"),
     height: "fit-content",
   },
   container: {
     width: "100%",
-    maxWidth: "1420px",
+    ...shorthands.margin("0", "auto"),
     height: "100vh",
     display: "flex",
     flexDirection: "column",
@@ -22,7 +23,12 @@ export const useLoginStyles = makeStyles({
     alignItems: "center",
   },
   textDiv: {
-    ...shorthands.margin("20px"),
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "5px",
   },
   label: {
     marginBottom: "10px",
@@ -38,8 +44,6 @@ export const useAddPostStyle = makeStyles({
     justifyContent: "space-around",
     alignItems: "center",
     width: "100%",
-    height: "400px",
-    flexDirection: "column",
   },
 
   form: {

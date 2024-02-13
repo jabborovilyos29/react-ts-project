@@ -1,16 +1,12 @@
 import { ReactElement } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 interface User {
   name: string;
   password: string;
 }
 
-interface Props {
-  children: ReactElement;
-}
-
-export function RequireAuth({ children }: Props): ReactElement {
+export function RequireAuth(): ReactElement {
   //   try {
   //     const user: User = JSON.parse(localStorage.getItem("user") ?? "");
   //     console.log(user);
@@ -29,5 +25,5 @@ export function RequireAuth({ children }: Props): ReactElement {
     return <Navigate to={"/login"} />;
   }
 
-  return children;
+  return <Outlet />;
 }

@@ -1,21 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { logout } from "./store/slices/user/userCheck";
-import { useNavigate } from "react-router-dom";
-import { Button, Input } from "@fluentui/react-components";
+import { Input } from "@fluentui/react-components";
 import { useSearchStyles } from "./hooks/styledHooks/useStyles";
 
 export default function Search({ triggerSearchTitle }: any) {
   const classes = useSearchStyles();
   const [search, setSearch] = useState<string>("");
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const Logout = (): void => {
-    dispatch(logout());
-    navigate("/login");
-  };
 
   useEffect(() => {
     const getdata = setTimeout(async () => {
@@ -36,7 +25,6 @@ export default function Search({ triggerSearchTitle }: any) {
   return (
     <>
       <div className={classes.root}>
-        <Button className={classes.logoutButton} onClick={Logout}>Logout</Button>
         <div className={classes.searchBox}>
           <Input
             id="search"

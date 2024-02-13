@@ -1,8 +1,11 @@
-import { ChangeEvent, FormEvent, ReactNode } from "react";
+import { ChangeEvent, FormEvent, ReactElement, ReactNode } from "react";
 import { useAddNewPostMutation } from "./services";
 import { Post, Values } from "./types/Types";
 import { Button, Input, Label, Text, useId } from "@fluentui/react-components";
 import { useAddPostStyle } from "./hooks/styledHooks/useStyles";
+import { ControllingOpenAndClose } from "./modal/Modal";
+import { useDispatch } from "react-redux";
+import { modalOpenClose } from "./store/slices/user/userCheck";
 
 const values: Omit<Post, "id"> = {
   title: "",
@@ -15,8 +18,9 @@ export default function AddPost({
   editPost,
   setEditedPost,
   updatePost,
-}: any): ReactNode {
+}: any): ReactNode | ReactElement {
   const [addPost] = useAddNewPostMutation();
+  const dispatch = useDispatch();
   const classes = useAddPostStyle();
   const largeId = useId("input-large");
 
@@ -42,6 +46,13 @@ export default function AddPost({
       };
       addPost(newData);
     }
+    dispatch(modalOpenClose());
+    setValue(values);
+    setEditedPost(null);
+  };
+
+  const handleClose = () => {
+    dispatch(modalOpenClose());
     setValue(values);
     setEditedPost(null);
   };
@@ -49,51 +60,63 @@ export default function AddPost({
   return (
     <>
       <div className={classes.root}>
-        <Text size={500} font="numeric" className={classes.title}>
-          {(editPost && "Edit post") || "Add post"}
-        </Text>
-        <form
-          autoComplete="off"
-          className={classes.form}
-          onSubmit={(evt: FormEvent<HTMLFormElement>) => {
-            handleSubmit(evt);
-          }}
-        >
-          <div>
-            <Label size="large" htmlFor={largeId}>
-              Title
-            </Label>
-            <Input
-              id={largeId}
-              name="title"
-              value={value.title}
-              onChange={(evt: ChangeEvent<HTMLInputElement>) => {
-                handleChage(evt);
+        <ControllingOpenAndClose>
+          <>
+            <Text size={500} font="numeric" className={classes.title}>
+              {(editPost && "Edit post") || "Add post"}
+            </Text>
+            <form
+              autoComplete="off"
+              className={classes.form}
+              onSubmit={(evt: FormEvent<HTMLFormElement>) => {
+                handleSubmit(evt);
               }}
-              required
-              size="large"
-            />
-          </div>
+            >
+              <div>
+                <Label size="large" htmlFor={largeId}>
+                  Title
+                </Label>
+                <Input
+                  id={largeId}
+                  name="title"
+                  value={value.title}
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) => {
+                    handleChage(evt);
+                  }}
+                  required
+                  size="large"
+                />
+              </div>
 
-          <div>
-            <Label size="large" htmlFor={largeId}>
-              Author
-            </Label>
-            <Input
-              id={largeId}
-              name="author"
-              value={value.author}
-              onChange={(evt: ChangeEvent<HTMLInputElement>) => {
-                handleChage(evt);
-              }}
-              required
-              size="large"
-            />
-          </div>
-          <Button type="submit" className={classes.button}>
-            {(editPost && "Edit post") || "Add post"}
-          </Button>
-        </form>
+              <div>
+                <Label size="large" htmlFor={largeId}>
+                  Author
+                </Label>
+                <Input
+                  id={largeId}
+                  name="author"
+                  value={value.author}
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) => {
+                    handleChage(evt);
+                  }}
+                  required
+                  size="large"
+                />
+              </div>
+              <Button type="submit" className={classes.button}>
+                {(editPost && "Edit post") || "Add post"}
+              </Button>
+              <Button
+                className={classes.button}
+                onClick={() => {
+                  handleClose();
+                }}
+              >
+                Close
+              </Button>
+            </form>
+          </>
+        </ControllingOpenAndClose>
       </div>
     </>
   );

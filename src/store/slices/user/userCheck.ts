@@ -3,6 +3,8 @@ import { InitialState, User } from "../../../types/Types";
 
 const initialState: InitialState = {
   user: null,
+  theme: true,
+  modal: false,
 };
 
 export const userCheckSlice = createSlice({
@@ -19,7 +21,14 @@ export const userCheckSlice = createSlice({
       state.user = null;
       localStorage.clear();
     },
+    changeTheme: (state: InitialState) => {
+      state.theme = !state.theme;
+    },
+    modalOpenClose: (state: InitialState) => {
+      state.modal = !state.modal;
+    },
   },
 });
 
-export const { logout, login } = userCheckSlice.actions;
+export const { logout, login, changeTheme, modalOpenClose } =
+  userCheckSlice.actions;

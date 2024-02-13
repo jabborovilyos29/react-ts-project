@@ -32,7 +32,13 @@ export interface CustomForm extends HTMLFormElement {
 }
 
 export interface InitialState {
-  user: null | User;
+  user: User | null;
+  theme: boolean;
+  modal: boolean;
+}
+
+export interface State {
+  user: InitialState;
 }
 
 export interface IsEmptyValue {
