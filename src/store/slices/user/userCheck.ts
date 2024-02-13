@@ -1,34 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { InitialState, User } from "../../../types/Types";
 
-const initialState: InitialState = {
+const initialState = {
   user: null,
-  theme: true,
-  modal: false,
 };
 
 export const userCheckSlice = createSlice({
   name: "userCheck",
   initialState,
   reducers: {
-    login: (state: InitialState, { payload }: { payload: User }) => {
+    login: (state, { payload }) => {
       state.user = payload;
       localStorage.clear();
-      const dataToJson: string = JSON.stringify(state.user);
+      const dataToJson = JSON.stringify(state.user);
       localStorage.setItem("user", dataToJson);
     },
-    logout: (state: InitialState) => {
+    logout: (state) => {
       state.user = null;
       localStorage.clear();
-    },
-    changeTheme: (state: InitialState) => {
-      state.theme = !state.theme;
-    },
-    modalOpenClose: (state: InitialState) => {
-      state.modal = !state.modal;
     },
   },
 });
 
-export const { logout, login, changeTheme, modalOpenClose } =
-  userCheckSlice.actions;
+export const { logout, login } = userCheckSlice.actions;

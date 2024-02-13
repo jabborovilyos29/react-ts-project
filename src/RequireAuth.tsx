@@ -1,18 +1,22 @@
 import { ReactElement } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 interface User {
   name: string;
   password: string;
 }
 
-export function RequireAuth(): ReactElement {
+// interface ErrorObj {
+//   error: string;
+// }
+
+export function RequireAuth({ children }: any): ReactElement {
   //   try {
   //     const user: User = JSON.parse(localStorage.getItem("user") ?? "");
   //     console.log(user);
   //     return children;
   //   } catch (error) {
-  //     return <Navigate to={"/login"} />;
+  //     return <Navigate to={"/login"} replace />;
   //   }
 
   const user: User | any = JSON.parse(
@@ -25,5 +29,5 @@ export function RequireAuth(): ReactElement {
     return <Navigate to={"/login"} />;
   }
 
-  return <Outlet />;
+  return children;
 }

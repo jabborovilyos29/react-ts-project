@@ -1,11 +1,11 @@
-import { ChangeEvent, FormEvent, ReactElement, ReactNode } from "react";
+import { ChangeEvent, FormEvent, ReactNode } from "react";
 import { useAddNewPostMutation } from "./services";
-import { Post, Values } from "./types/Types";
-import { Button, Input, Label, Text, useId } from "@fluentui/react-components";
-import { useAddPostStyle } from "./hooks/styledHooks/useStyles";
-import { ControllingOpenAndClose } from "./modal/Modal";
-import { useDispatch } from "react-redux";
-import { modalOpenClose } from "./store/slices/user/userCheck";
+
+interface Post {
+  id: string;
+  title: string;
+  author: string;
+}
 
 const values: Omit<Post, "id"> = {
   title: "",
@@ -16,16 +16,12 @@ export default function AddPost({
   value,
   setValue,
   editPost,
-  setEditedPost,
   updatePost,
-}: any): ReactNode | ReactElement {
+}: any): ReactNode {
   const [addPost] = useAddNewPostMutation();
-  const dispatch = useDispatch();
-  const classes = useAddPostStyle();
-  const largeId = useId("input-large");
 
   const handleChage = (evt: ChangeEvent<HTMLInputElement>) => {
-    setValue((prev: Post | Values): Post | Values => {
+    setValue((prev: Post): Post => {
       return { ...prev, [evt.target.name]: evt.target.value };
     });
   };
@@ -46,77 +42,77 @@ export default function AddPost({
       };
       addPost(newData);
     }
-    dispatch(modalOpenClose());
     setValue(values);
-    setEditedPost(null);
-  };
-
-  const handleClose = () => {
-    dispatch(modalOpenClose());
-    setValue(values);
-    setEditedPost(null);
   };
 
   return (
     <>
-      <div className={classes.root}>
-        <ControllingOpenAndClose>
-          <>
-            <Text size={500} font="numeric" className={classes.title}>
-              {(editPost && "Edit post") || "Add post"}
-            </Text>
-            <form
-              autoComplete="off"
-              className={classes.form}
-              onSubmit={(evt: FormEvent<HTMLFormElement>) => {
-                handleSubmit(evt);
-              }}
-            >
-              <div>
-                <Label size="large" htmlFor={largeId}>
-                  Title
-                </Label>
-                <Input
-                  id={largeId}
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            {(editPost && "Edit post") || "Add post"}
+          </h2>
+        </div>
+
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <form
+            className="space-y-6"
+            onSubmit={(evt: FormEvent<HTMLFormElement>) => {
+              handleSubmit(evt);
+            }}
+          >
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Title
+              </label>
+              <div className="mt-2">
+                <input
+                  id="title"
                   name="title"
                   value={value.title}
                   onChange={(evt: ChangeEvent<HTMLInputElement>) => {
                     handleChage(evt);
                   }}
                   required
-                  size="large"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
+            </div>
 
-              <div>
-                <Label size="large" htmlFor={largeId}>
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
                   Author
-                </Label>
-                <Input
-                  id={largeId}
+                </label>
+                <div className="text-sm"></div>
+              </div>
+              <div className="mt-2">
+                <input
+                  id="name"
                   name="author"
                   value={value.author}
                   onChange={(evt: ChangeEvent<HTMLInputElement>) => {
                     handleChage(evt);
                   }}
                   required
-                  size="large"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
-              <Button type="submit" className={classes.button}>
+            </div>
+            <div className="mt-2"></div>
+            <div>
+              <button className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 {(editPost && "Edit post") || "Add post"}
-              </Button>
-              <Button
-                className={classes.button}
-                onClick={() => {
-                  handleClose();
-                }}
-              >
-                Close
-              </Button>
-            </form>
-          </>
-        </ControllingOpenAndClose>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
