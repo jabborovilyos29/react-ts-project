@@ -1,27 +1,46 @@
-import { FormEvent, useState } from "react";
 import { useGetUserQuery } from "./services";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "./store/slices/user/userCheck";
 import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  Card,
+  Field,
+  Input,
+  InputProps,
+  Label,
+  Text,
+} from "@fluentui/react-components";
+import { useLoginStyles } from "./hooks/styledHooks/useStyles";
+import { CustomForm, UseInput, User } from "./types/Types";
+import { useInput } from "./hooks/validation/useInput";
+import { ChangeThemeComponent } from "./ChangeThemeComponent";
+import { tokens } from "@fluentui/react-components";
+import { Eye24Regular, EyeOff24Regular } from "@fluentui/react-icons";
 
-interface User {
-  name: string;
-  password: string;
-}
-
-interface CustomElements extends HTMLFormControlsCollection {
-  name: HTMLInputElement;
-  password: HTMLInputElement;
-}
-
-interface CustomForm extends HTMLFormElement {
-  elements: CustomElements;
-}
-
-export default function Login() {
+export default function Login(props: InputProps) {
   const [errorHandling, setErrorHandling] = useState<boolean>(false);
+  const [seePassword, setSeePassword] = useState<boolean>(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const styles = useLoginStyles();
+
+  const handleClick = () => {
+    setSeePassword((prev) => !prev);
+  };
+
+  const name: UseInput = useInput("", {
+    isEmpty: true,
+    minLength: 3,
+    maxLength: 9,
+  });
+  const password: UseInput = useInput("", {
+    isEmpty: true,
+    minLength: 4,
+    maxLength: 16,
+  });
 
   const { data } = useGetUserQuery({
     refetchOnMountOrArgChange: true,
@@ -46,66 +65,120 @@ export default function Login() {
 
   return (
     <>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
-          </h2>
+      <div
+        className={styles.container}
+        style={{ backgroundColor: tokens.colorBrandStroke2Contrast }}
+      >
+        <div style={{ position: "absolute", top: "15px", right: "15px" }}>
+          <ChangeThemeComponent />
         </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            className="space-y-6"
-            onSubmit={(evt: FormEvent<CustomForm>) => handleSubmit(evt)}
-          >
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
+        <Card className={styles.card}>
+          <div className={styles.textDiv}>
+            <Text size={500} font="numeric">
+              Sign in to your account
+            </Text>
+          </div>
+          <form onSubmit={(evt: FormEvent<CustomForm>) => handleSubmit(evt)}>
+            <div className={styles.root}>
+              <Field
+                label={
+                  <Label size={"medium"} className={styles.label}>
+                    Name
+                  </Label>
+                }
+                validationMessage={
+                  (name.isDirty &&
+                    name.isEmpty.value &&
+                    `${name.isEmpty.message}`) ||
+                  (name.isDirty &&
+                    name.maxLengthErr.value &&
+                    `${name.maxLengthErr.message}`) ||
+                  (name.isDirty &&
+                    name.minLengthErr.value &&
+                    `${name.minLengthErr.message}`) ||
+                  ""
+                }
               >
-                Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="name"
-                  name="name"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                <Input
+                  value={name.value}
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    name.onChange(evt)
+                  }
+                  onBlur={() => name.onBlur()}
+                  id={"name"}
+                  {...props}
+                  name={"name"}
+                  type={"text"}
+                  placeholder="your name"
                 />
-              </div>
+              </Field>
             </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Password
-                </label>
-                <div className="text-sm"></div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            <div className={styles.root}>
+              <Field
+                label={
+                  <Label size={"medium"} className={styles.label}>
+                    Password
+                  </Label>
+                }
+                validationMessage={
+                  (password.isDirty &&
+                    password.isEmpty.value &&
+                    `${password.isEmpty.message}`) ||
+                  (password.isDirty &&
+                    password.maxLengthErr.value &&
+                    `${password.maxLengthErr.message}`) ||
+                  (password.isDirty &&
+                    password.minLengthErr.value &&
+                    `${password.minLengthErr.message}`) ||
+                  ""
+                }
+              >
+                <Input
+                  id={"password"}
+                  {...props}
+                  name={"password"}
+                  type={(seePassword && "text") || "password"}
+                  placeholder="your password"
+                  value={password.value}
+                  contentAfter={
+                    seePassword ? (
+                      <EyeOff24Regular
+                        onClick={() => {
+                          handleClick();
+                        }}
+                        style={{ cursor: "pointer" }}
+                      />
+                    ) : (
+                      <Eye24Regular
+                        onClick={() => {
+                          handleClick();
+                        }}
+                        style={{ cursor: "pointer" }}
+                      />
+                    )
+                  }
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    password.onChange(evt)
+                  }
+                  onBlur={() => password.onBlur()}
                 />
-              </div>
+              </Field>
             </div>
-            <div className="mt-2">
-              <h1>{errorHandling && "Invalid username or password"}</h1>
+            <div style={{ margin: "20px" }}>
+              <h4 style={{ color: "red" }}>
+                {errorHandling && "Invalid username or password"}
+              </h4>
             </div>
             <div>
-              <button className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              <Button
+                disabled={!name.inputValid || !password.inputValid}
+                type="submit"
+              >
                 Log in
-              </button>
+              </Button>
             </div>
           </form>
-        </div>
+        </Card>
       </div>
     </>
   );
