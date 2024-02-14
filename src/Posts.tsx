@@ -33,9 +33,15 @@ export default function Posts() {
   const dispatch = useDispatch();
   const [triggerLoader, setTriggerLoader] = useState(false);
   const [value, setValue] = useState<Values>(values);
-  const { data, error, isLoading } = useGetPostsQuery("");
-  const [triggerSearchTitle, { data: resultSearch, isLoading: searchLoading }] =
-    useLazyGetPostsQuery();
+  const { data, error, isLoading, isFetching } = useGetPostsQuery("");
+  const [
+    triggerSearchTitle,
+    {
+      data: resultSearch,
+      isLoading: searchLoading,
+      isFetching: triggerFetching,
+    },
+  ] = useLazyGetPostsQuery();
   const [triggerPostById, {}] = useLazyGetPostByIdQuery();
   const [updatePost, {}] = useUpdatePostMutation();
   const [editPost, setEditedPost] = useState<Values | Items | null>(null);
@@ -58,11 +64,12 @@ export default function Posts() {
   };
 
   return (
-    <div style={{ minHeight: "86.6vh" }}>
+    <div style={{ minHeight: "86.6vh", padding: "40px" }}>
       <div
         style={{
           display: "flex",
           width: "100%",
+          maxWidth: "450px",
           height: "100px",
           justifyContent: "space-around",
           alignItems: "center",
@@ -79,8 +86,16 @@ export default function Posts() {
       </div>
       {error ? (
         <>Oh no, there was an error</>
-      ) : isLoading || searchLoading || triggerLoader ? (
-        <Spinner size="huge" color={tokens.colorNeutralBackgroundInverted} />
+      ) : isLoading ||
+        searchLoading ||
+        triggerLoader ||
+        isFetching ||
+        triggerFetching ? (
+        <Spinner
+          size="huge"
+          color={tokens.colorNeutralBackgroundInverted}
+          className={styles.root}
+        />
       ) : data ? (
         <>
           <div className={styles.root}>

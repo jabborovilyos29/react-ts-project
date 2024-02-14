@@ -1,5 +1,15 @@
 import * as React from "react";
-import { Button } from "@fluentui/react-components";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger,
+  useRestoreFocusTarget,
+} from "@fluentui/react-components";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "./store/slices/user/userCheck";
@@ -10,22 +20,64 @@ import {
   PopoverTrigger,
 } from "@fluentui/react-components";
 import type { PopoverProps } from "@fluentui/react-components";
-
+import { ChangeThemeComponent } from "./ChangeThemeComponent";
+import { Person24Filled, SignOut24Regular } from "@fluentui/react-icons";
 
 export default function LogoutButton() {
+  const [open, setOpen] = React.useState(false);
+  const restoreFocusTargetAttribute = useRestoreFocusTarget();
+
   const classes = useSearchStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const Logout = (): void => {
+  const handleLogout = (): void => {
     dispatch(logout());
+    setOpen(false);
     navigate("/login");
   };
 
   return (
-    <Button className={classes.logoutButton} onClick={Logout}>
-      Logout
-    </Button>
+    <>
+      <Button
+        icon={<SignOut24Regular />}
+        className={classes.logoutButton}
+        aria-label="Delete"
+        {...restoreFocusTargetAttribute}
+        onClick={() => {
+          setOpen(true);
+        }}
+      >
+        Logout
+      </Button>
+
+      <Dialog
+        open={open}
+        onOpenChange={(_, data) => {
+          setOpen(data.open);
+        }}
+      >
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>Logout</DialogTitle>
+            <DialogContent>Are you sure to leave us?</DialogContent>
+            <DialogActions>
+              <DialogTrigger disableButtonEnhancement>
+                <Button appearance="secondary">Close</Button>
+              </DialogTrigger>
+              <Button
+                appearance="primary"
+                onClick={() => {
+                  handleLogout();
+                }}
+              >
+                Logout
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
+    </>
   );
 }
 
@@ -48,10 +100,20 @@ export const Logout = () => {
   return (
     <Popover onOpenChange={onOpenChange}>
       <PopoverTrigger disableButtonEnhancement>
-        <Button>Logout</Button>
+        <Button icon={<Person24Filled />}>User</Button>
       </PopoverTrigger>
       <PopoverSurface>
-        <LogoutButton />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <LogoutButton />
+          <ChangeThemeComponent />
+        </div>
       </PopoverSurface>
     </Popover>
   );

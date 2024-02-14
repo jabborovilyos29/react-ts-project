@@ -46,8 +46,8 @@ export default function AddPost({
       };
       addPost(newData);
     }
-    dispatch(modalOpenClose());
     setValue(values);
+    dispatch(modalOpenClose());
     setEditedPost(null);
   };
 
