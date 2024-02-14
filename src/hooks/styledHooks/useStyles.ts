@@ -44,6 +44,8 @@ export const useAddPostStyle = makeStyles({
     justifyContent: "space-around",
     alignItems: "center",
     width: "100%",
+    maxWidth: "200px",
+    height: "50px",
   },
 
   form: {
@@ -105,5 +107,16 @@ export const useCardStyles = makeStyles({
     ...shorthands.margin("auto"),
     width: "520px",
     maxWidth: "100%",
+  },
+});
+export const useTableStyles = makeStyles({
+  root: {
+    width: "100%",
+    maxWidth: "750px",
+    minHeight: "86.6vh",
+    display: "flex",
+    ...shorthands.padding("40px"),
+    justifyContent: "center",
+    alignItems: "flex-start",
   },
 });

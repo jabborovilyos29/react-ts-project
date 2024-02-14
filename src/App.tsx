@@ -4,14 +4,14 @@ import { RequireAuth } from "./RequireAuth";
 import { GuestRoutes } from "./GuestRoutes";
 import HomePage from "./HomePage";
 import Posts from "./Posts";
-import { CellNavigation } from "./Table";
+import { DataTable } from "./DataTable";
 
 export default function App() {
   return (
     <Routes>
       <Route element={<RequireAuth />}>
         <Route element={<HomePage />}>
-          <Route path="/" element={<CellNavigation />} />
+          <Route path="/" element={<DataTable />} />
           <Route path="posts" element={<Posts />} />
         </Route>
       </Route>

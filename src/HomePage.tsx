@@ -1,11 +1,15 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
+import Sidebar from "./Sidebar";
 
 export default function HomePage() {
   return (
     <>
       <Header />
-      <Outlet />
+      <div style={{ display: "flex"  }}>
+        <Sidebar />
+        <Outlet />
+      </div>
     </>
   );
 }
