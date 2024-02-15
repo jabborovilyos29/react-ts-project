@@ -113,10 +113,12 @@ export const useTableStyles = makeStyles({
   root: {
     width: "100%",
     maxWidth: "750px",
+    height: "100vh",
     minHeight: "86.6vh",
     display: "flex",
+    flexDirection: "column",
     ...shorthands.padding("40px"),
-    justifyContent: "center",
+    justifyContent: "start",
     alignItems: "flex-start",
   },
 });

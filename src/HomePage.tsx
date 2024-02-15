@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <div style={{ display: "flex"  }}>
+      <div style={{ display: "flex", overflow: "hidden" }}>
         <Sidebar />
         <Outlet />
       </div>

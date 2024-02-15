@@ -74,6 +74,13 @@ export const DataTable = () => {
 
   return (
     <div className={classes.root}>
+      <AddPost
+        value={value}
+        setValue={setValue}
+        editPost={editPost}
+        setEditedPost={setEditedPost}
+        updatePost={updatePost}
+      />
       <Table
         {...keyboardNavAttr}
         role="grid"
@@ -156,13 +163,6 @@ export const DataTable = () => {
           )}
         </TableBody>
       </Table>
-      <AddPost
-        value={value}
-        setValue={setValue}
-        editPost={editPost}
-        setEditedPost={setEditedPost}
-        updatePost={updatePost}
-      />
     </div>
   );
 };
