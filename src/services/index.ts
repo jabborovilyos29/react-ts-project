@@ -70,10 +70,15 @@ export const dataApi = createApi({
       }),
       invalidatesTags: ["Post"],
     }),
+    getPin: builder.query({
+      query: () => "/pin",
+    }),
   }),
 });
 export const {
   useGetPostsQuery,
+  useGetPinQuery,
+  useLazyGetPinQuery,
   useLazyGetPostsQuery,
   useAddNewPostMutation,
   useDeletePostMutation,

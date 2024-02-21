@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+import { InputProps } from "@fluentui/react-components";
 
 export interface Values {
   title: string;
@@ -31,6 +32,12 @@ export interface CustomForm extends HTMLFormElement {
   elements: CustomElements;
 }
 
+export interface RefElements extends HTMLFormControlsCollection {}
+
+export interface RefForm extends HTMLFormElement {
+  elements: RefElements;
+}
+
 export interface InitialState {
   user: User | null;
   theme: boolean;
@@ -55,4 +62,15 @@ export interface UseInput {
   onBlur: () => void;
   isDirty: boolean;
   inputValid: boolean;
+}
+
+export interface PinInputProps extends InputProps {
+  inputType: "NUMERIC" | "ALPHABETIC" | "ALL";
+  lenght: 6 | 4;
+  responsePin: { value: string } | null;
+
+  isLoading: boolean;
+  isFetching: boolean;
+  isError: boolean;
+  handleGetPin: (pin: (string | null)[]) => Promise<string | any>;
 }
