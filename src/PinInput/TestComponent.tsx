@@ -16,7 +16,6 @@ export function TestComponent() {
       setPin(response);
     } catch (err) {
       console.error(err);
-    } finally {
     }
   };
 
