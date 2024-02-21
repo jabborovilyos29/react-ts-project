@@ -5,6 +5,8 @@ import { GuestRoutes } from "./GuestRoutes";
 import HomePage from "./HomePage";
 import Posts from "./Posts";
 import { DataTable } from "./DataTable";
+import { PinInput } from "./PinInput/PinInput";
+import { TestComponent } from "./PinInput/TestComponent";
 
 export default function App() {
   return (
@@ -19,7 +21,9 @@ export default function App() {
         path="/login"
         element={
           <GuestRoutes>
-            <Login />
+            
+          <TestComponent />
+            {/* <Login /> */}
           </GuestRoutes>
         }
       />
