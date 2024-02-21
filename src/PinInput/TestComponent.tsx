@@ -1,34 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PinInput } from "./PinInput";
 import { useLazyGetPinQuery } from "../services";
 
 export function TestComponent() {
   const [value, setValue] = useState<string>("");
-  const [errorHandling, setErrorHandling] = useState(false);
-  const [triggerGetPin, { isLoading, isError: errorServer, isFetching }] =
+  const [responsePin, setResponsePin] = useState<{ value: string } | null>(
+    null,
+  );
+  const [triggerGetPin, { isLoading, isError, isFetching }] =
     useLazyGetPinQuery();
-  const [pin, setPin] = useState<{ pin: string } | null>(null);
 
-  const handleGetPin = async (pin: (string | null)[]) => {
-    setValue(pin?.join(""));
-    try {
-      const response = await triggerGetPin({}).unwrap();
-      setPin(response);
-    } catch (err) {
-      console.error(err);
-    }
+  const clearResponse = () => {
+    setResponsePin(null);
   };
 
-  useEffect(() => {
-    if (pin?.pin !== value && pin !== null) {
-      setErrorHandling(true);
-      setPin(null);
-      setValue("");
-    } else if (pin?.pin === value) {
-      setErrorHandling(false);
-      console.log("correct");
+  const handleGetPin = async (pin: (string | null)[]) => {
+    setValue(pin.join(""));
+    try {
+      const response: { pin: string } = await triggerGetPin({}).unwrap();
+      if (response.pin === pin.join("")) {
+        setResponsePin({
+          value: response.pin,
+        });
+      } else {
+        setResponsePin({ value: "error" });
+      }
+    } catch (err) {
+      console.log(err);
+      clearResponse();
     }
-  }, [pin, value]);
+  };
 
   return (
     <>
@@ -36,11 +37,10 @@ export function TestComponent() {
       <PinInput
         inputType="NUMERIC"
         lenght={4}
-        loading={isLoading}
-        errorServer={errorServer}
-        errorHandling={errorHandling}
-        setErrorHandling={setErrorHandling}
-        fetching={isFetching}
+        responsePin={responsePin}
+        isLoading={isLoading}
+        isError={isError}
+        isFetching={isFetching}
         handleGetPin={handleGetPin}
       />
     </>

@@ -6,15 +6,15 @@ import { PinInputProps, RefForm } from "../types/Types";
 export const PinInput = ({
   inputType,
   lenght,
-  loading,
-  fetching,
-  errorServer,
-  errorHandling,
-  setErrorHandling,
+  responsePin,
+  isLoading,
+  isFetching,
+  isError,
   handleGetPin,
 }: PinInputProps) => {
   const classes = useStyles();
   const [focusId, setFocusId] = useState<number | null>(null);
+  const [errorHandling, setErrorHandling] = useState<boolean>(false);
   const inputRef = useRef<RefForm>(null);
   const [pin, setPin] = useState<(string | null)[]>(
     new Array(lenght).fill(null),
@@ -25,10 +25,10 @@ export const PinInput = ({
     const elements = inputRef.current?.elements;
     if (!elements) return;
 
-    if (pin.join("").length === lenght) {
+    if (pin?.join("").length === lenght) {
       handleGetPin(pin);
-      setFocusId(null);
       setPin(new Array(lenght).fill(null));
+      setFocusId(null);
     }
 
     if (focusId !== null) {
@@ -36,13 +36,19 @@ export const PinInput = ({
       setFocusId(null);
     } else {
       for (let index = 0; index < pin.length; index++) {
-        if (pin[index] === null && loading === false) {
+        if (pin[index] === null && isLoading === false) {
           elements[index]?.focus();
           break;
         }
       }
     }
-  }, [pin, loading]);
+  }, [pin, isLoading, isFetching]);
+
+  useEffect(() => {
+    if (responsePin?.value === "error") {
+      setErrorHandling(true);
+    }
+  }, [responsePin]);
 
   const handleKeyDown = (evt: KeyboardEvent<HTMLInputElement>, id: number) => {
     setErrorHandling(false);
@@ -81,11 +87,9 @@ export const PinInput = ({
         <Field
           className={classes.field}
           label="Input pin"
-          validationState={
-            ((errorServer || errorHandling) && "error") || "none"
-          }
+          validationState={((isError || errorHandling) && "error") || "none"}
           validationMessage={
-            (errorServer && "server error") ||
+            (isError && "server error") ||
             (errorHandling && "invalid pin") ||
             ""
           }
@@ -94,10 +98,10 @@ export const PinInput = ({
             {pin.map((item, id) => {
               return (
                 <Input
-                  disabled={loading}
+                  disabled={isLoading || isFetching}
                   type={(inputType === "NUMERIC" && "number") || "text"}
                   style={{
-                    border: errorHandling || errorServer ? "1px solid red" : "",
+                    border: errorHandling || isError ? "1px solid red" : "",
                   }}
                   value={item ?? ""}
                   key={id}
@@ -112,7 +116,7 @@ export const PinInput = ({
                 />
               );
             })}
-            {(loading || fetching) && <Spinner size="tiny" />}
+            {(isLoading || isFetching) && <Spinner size="tiny" />}
           </div>
         </Field>
       </form>

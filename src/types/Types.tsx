@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { ChangeEvent } from "react";
 import { InputProps } from "@fluentui/react-components";
 
 export interface Values {
@@ -67,10 +67,10 @@ export interface UseInput {
 export interface PinInputProps extends InputProps {
   inputType: "NUMERIC" | "ALPHABETIC" | "ALL";
   lenght: 6 | 4;
-  loading: boolean;
-  fetching: boolean;
-  errorServer: boolean;
-  errorHandling: boolean;
-  setErrorHandling: Dispatch<SetStateAction<boolean>>;
-  handleGetPin: (pin: (string | null)[]) => Promise<void>;
+  responsePin: { value: string } | null;
+
+  isLoading: boolean;
+  isFetching: boolean;
+  isError: boolean;
+  handleGetPin: (pin: (string | null)[]) => Promise<string | any>;
 }
