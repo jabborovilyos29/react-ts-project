@@ -72,7 +72,6 @@ export const dataApi = createApi({
     }),
     getPin: builder.query({
       query: () => "/pin",
-      providesTags: ["Post"],
     }),
   }),
 });
