@@ -42,6 +42,7 @@ export interface InitialState {
   user: User | null;
   theme: boolean;
   modal: boolean;
+  pin: boolean;
 }
 
 export interface State {
@@ -60,6 +61,7 @@ export interface UseInput {
   value: string;
   onChange: (evt: ChangeEvent<HTMLInputElement>) => void;
   onBlur: () => void;
+  onFocus: () => void;
   isDirty: boolean;
   inputValid: boolean;
 }

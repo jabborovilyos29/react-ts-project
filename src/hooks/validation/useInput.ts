@@ -18,5 +18,9 @@ export const useInput = (
     setIsDirty(true);
   };
 
-  return { value, onChange, onBlur, isDirty, ...valid };
+  const onFocus = () => {
+    setIsDirty(false);
+  };
+
+  return { value, onChange, onBlur, onFocus, isDirty, ...valid };
 };

@@ -1,8 +1,7 @@
 import { useGetUserQuery } from "./services";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "./store/slices/user/userCheck";
-import { useNavigate } from "react-router-dom";
+import { modalOpen } from "./store/slices/user/userCheck";
 import {
   Button,
   Card,
@@ -18,13 +17,14 @@ import { useInput } from "./hooks/validation/useInput";
 import { ChangeThemeComponent } from "./ChangeThemeComponent";
 import { tokens } from "@fluentui/react-components";
 import { Eye24Regular, EyeOff24Regular } from "@fluentui/react-icons";
+import { PinInputModal } from "./modal/PinInputModal";
 
 export default function Login(props: InputProps) {
   const [errorHandling, setErrorHandling] = useState<boolean>(false);
   const [seePassword, setSeePassword] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const styles = useLoginStyles();
 
   const handleClick = () => {
@@ -54,10 +54,10 @@ export default function Login(props: InputProps) {
       name: target.name.value,
       password: target.password.value,
     };
+    setUser(user);
 
     if (data.name === user.name && data.password === user.password) {
-      dispatch(login(user));
-      navigate("/");
+      dispatch(modalOpen());
     } else {
       setErrorHandling(true);
     }
@@ -65,6 +65,7 @@ export default function Login(props: InputProps) {
 
   return (
     <>
+      <PinInputModal user={user} />
       <div
         className={styles.container}
         style={{ backgroundColor: tokens.colorBrandStroke2Contrast }}
@@ -105,6 +106,7 @@ export default function Login(props: InputProps) {
                     name.onChange(evt)
                   }
                   onBlur={() => name.onBlur()}
+                  onFocus={() => name.onFocus()}
                   id={"name"}
                   {...props}
                   name={"name"}
@@ -161,6 +163,7 @@ export default function Login(props: InputProps) {
                     password.onChange(evt)
                   }
                   onBlur={() => password.onBlur()}
+                  onFocus={() => password.onFocus()}
                 />
               </Field>
             </div>

@@ -26,7 +26,7 @@ import {
 } from "./services";
 import { useTableStyles } from "./hooks/styledHooks/useStyles";
 import { DeleteRegular, EditRegular } from "@fluentui/react-icons";
-import { modalOpenClose } from "./store/slices/user/userCheck";
+import { modalOpen } from "./store/slices/user/userCheck";
 import { Items, Values } from "./types/Types";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -60,7 +60,7 @@ export const DataTable = () => {
   const [deletePost] = useDeletePostMutation();
 
   const handleEdit = async (item: Items) => {
-    dispatch(modalOpenClose());
+    dispatch(modalOpen());
     try {
       const response = await triggerPostById({ id: item.id }).unwrap();
       setEditedPost(response);

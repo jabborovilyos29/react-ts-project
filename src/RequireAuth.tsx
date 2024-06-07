@@ -24,6 +24,5 @@ export function RequireAuth(): ReactElement {
   if (user?.error) {
     return <Navigate to={"/login"} />;
   }
-
   return <Outlet />;
 }

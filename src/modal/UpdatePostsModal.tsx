@@ -8,7 +8,7 @@ import {
 import { ReactElement } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { State } from "../types/Types";
-import { modalOpenClose } from "../store/slices/user/userCheck";
+import { modalOpen } from "../store/slices/user/userCheck";
 
 export const ControllingOpenAndClose = ({
   children,
@@ -20,9 +20,9 @@ export const ControllingOpenAndClose = ({
   const dispatch = useDispatch();
 
   return (
-    <Dialog open={modal} onOpenChange={() => dispatch(modalOpenClose())}>
+    <Dialog open={modal} onOpenChange={() => dispatch(modalOpen())}>
       <DialogTrigger disableButtonEnhancement>
-        <Button>Add post...</Button>
+        <Button>Add post..</Button>
       </DialogTrigger>
       <DialogSurface>
         <DialogBody>{children}</DialogBody>

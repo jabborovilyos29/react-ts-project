@@ -27,8 +27,8 @@ export const PinInput = ({
 
     if (pin?.join("").length === lenght) {
       handleGetPin(pin);
-      setPin(new Array(lenght).fill(null));
       setFocusId(null);
+      setPin(new Array(lenght).fill(null));
     }
 
     if (focusId !== null) {
@@ -83,7 +83,7 @@ export const PinInput = ({
 
   return (
     <>
-      <form ref={inputRef} className={classes.root}>
+      <form ref={inputRef}>
         <Field
           className={classes.field}
           label="Input pin"

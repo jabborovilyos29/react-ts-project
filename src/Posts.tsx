@@ -26,7 +26,7 @@ const values: Values = {
 };
 import { tokens } from "@fluentui/react-components";
 import { useDispatch } from "react-redux";
-import { modalOpenClose } from "./store/slices/user/userCheck";
+import { modalOpen } from "./store/slices/user/userCheck";
 
 export default function Posts() {
   const styles = useCardStyles();
@@ -49,7 +49,7 @@ export default function Posts() {
   const [deletePost] = useDeletePostMutation();
 
   const handleEdit = async (item: Items) => {
-    dispatch(modalOpenClose());
+    dispatch(modalOpen());
     try {
       setTriggerLoader(true);
       const response = await triggerPostById({ id: item.id }).unwrap();

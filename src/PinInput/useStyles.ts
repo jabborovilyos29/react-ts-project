@@ -2,15 +2,6 @@ import { makeStyles, shorthands } from "@fluentui/react-components";
 import { tokens } from "@fluentui/react-components";
 
 export const useStyles = makeStyles({
-  root: {
-    width: "100%",
-    maxWidth: "1400px",
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    ...shorthands.margin("0px", "auto"),
-  },
   field: {
     display: "flex",
     flexDirection: "column",

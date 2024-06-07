@@ -3,9 +3,9 @@ import { useAddNewPostMutation } from "./services";
 import { Post, Values } from "./types/Types";
 import { Button, Input, Label, Text, useId } from "@fluentui/react-components";
 import { useAddPostStyle } from "./hooks/styledHooks/useStyles";
-import { ControllingOpenAndClose } from "./modal/Modal";
+import { ControllingOpenAndClose } from "./modal/UpdatePostsModal";
 import { useDispatch } from "react-redux";
-import { modalOpenClose } from "./store/slices/user/userCheck";
+import { modalClose } from "./store/slices/user/userCheck";
 
 const values: Omit<Post, "id"> = {
   title: "",
@@ -47,12 +47,12 @@ export default function AddPost({
       addPost(newData);
     }
     setValue(values);
-    dispatch(modalOpenClose());
+    dispatch(modalClose());
     setEditedPost(null);
   };
 
   const handleClose = () => {
-    dispatch(modalOpenClose());
+    dispatch(modalClose());
     setValue(values);
     setEditedPost(null);
   };

@@ -5,13 +5,14 @@ const initialState: InitialState = {
   user: null,
   theme: true,
   modal: false,
+  pin: false,
 };
 
 export const userCheckSlice = createSlice({
   name: "userCheck",
   initialState,
   reducers: {
-    login: (state: InitialState, { payload }: { payload: User }) => {
+    login: (state: InitialState, { payload }: { payload: User | null }) => {
       state.user = payload;
       localStorage.clear();
       const dataToJson: string = JSON.stringify(state.user);
@@ -19,16 +20,23 @@ export const userCheckSlice = createSlice({
     },
     logout: (state: InitialState) => {
       state.user = null;
+      state.pin = false;
       localStorage.clear();
     },
     changeTheme: (state: InitialState) => {
       state.theme = !state.theme;
     },
-    modalOpenClose: (state: InitialState) => {
-      state.modal = !state.modal;
+    modalOpen: (state: InitialState) => {
+      state.modal = true;
+    },
+    modalClose: (state: InitialState) => {
+      state.modal = false;
+    },
+    pinCheck: (state: InitialState) => {
+      state.pin = true;
     },
   },
 });
 
-export const { logout, login, changeTheme, modalOpenClose } =
+export const { logout, login, changeTheme, modalOpen, modalClose, pinCheck } =
   userCheckSlice.actions;
